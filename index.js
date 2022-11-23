@@ -4,6 +4,7 @@ const ejs = require("ejs");
 const path = require("path");
 const mongoose = require("mongoose");
 const expressSession = require("express-session");
+const mongoStore=require("connect-mongo");
 // const bodyParser = require("body-parser"); // this is in express now
 const BlogPost = require("./models/BlogPost");
 // const { findById } = require("./models/BlogPost");
@@ -25,7 +26,8 @@ const app = new express();
 
 global.loggedIn = null;
 
-app.use(expressSession({secret: "kathi537", resave: false, saveUninitialized: true}));
+app.use(expressSession({secret: "Dilver", resave: false, saveUninitialized: true,store:mongoStore.create({mongoUrl:process.env.MONGO_SESSION_URL}),
+}));
 app.use("*", loggedInMiddleware)
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -57,6 +59,10 @@ app.post("/users/register", redirectIfAuth, storeUserController);
 app.get("/auth/login", redirectIfAuth, loginController);
 
 app.post("/users/login", redirectIfAuth, loginUserController);
+
+
+
+
 
 // app.post("/posts/store", async(req,res) => {
 //   // res.render('create');
